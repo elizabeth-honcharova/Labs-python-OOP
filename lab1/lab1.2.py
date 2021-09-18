@@ -27,7 +27,7 @@ if __name__ == "__main__":
     # produce one of the selected action on all entered values 
     result = arg.values[0]
     for value in arg.values[1:]:
-        if arg.action == "div" and not value:
+        if arg.action == "div" or "mod" and not value:
             result = "Division by zero error!"
             break
         else:
