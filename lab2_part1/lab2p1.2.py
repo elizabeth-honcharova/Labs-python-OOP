@@ -6,9 +6,9 @@ class Rational:
 
         if not isinstance(numerator , int):
             raise TypeError("numerator is not integer")
-        elif not isinstance(denumerator , int):
+        if not isinstance(denumerator , int):
             raise TypeError("denumenator is not integer")
-        elif not denumerator:
+        if not denumerator:
             raise ZeroDivisionError("denumerator = 0")
 
         average = math.gcd(numerator, denumerator)
