@@ -1,13 +1,14 @@
 import math
 
+
 class Rational:
 
     def __init__(self, numerator = 1, denumerator = 1):
 
-        if not isinstance(numerator , int):
+        if not isinstance(numerator, int):
             raise TypeError("numerator is not integer")
-        if not isinstance(denumerator , int):
-            raise TypeError("denumenator is not integer")
+        if not isinstance(denumerator, int):
+            raise TypeError("denumerator is not integer")
         if not denumerator:
             raise ZeroDivisionError("denumerator = 0")
 
@@ -21,6 +22,7 @@ class Rational:
 
     def get_infloat(self) -> float:
         return self.__numerator / self.__denumerator
+
 
 if __name__ == '__main__':
     val = Rational(33, 11)

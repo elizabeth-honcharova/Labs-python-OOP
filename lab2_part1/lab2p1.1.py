@@ -1,8 +1,8 @@
 class Rectangle:
 
-    def __init__(self):
-        self.__width = 1.0
-        self.__length = 1.0
+    def __init__(self, width = 1.0, length = 1.0):
+        self.width = width
+        self.length = length
 
     def calc_perimeter(self):
         return self.__length * 2 + self.__width * 2
@@ -20,22 +20,24 @@ class Rectangle:
 
     @length.setter
     def length(self, length):
-        if type(length) is float and (0.0 < length <= 20.0):
-            self.__length = length
-        else:
-            print("Invalid number")
+        if not isinstance(length, float):
+            raise TypeError("Invalid type of number")
+        if length <= 0.0 or length > 20.0:
+            raise ValueError("Invalid value of number")
+        self.__length = length
 
     @width.setter
     def width(self, width):
-        if type(width) is float and (0.0 < width <= 20.0):
-            self.__width = width
-        else:
-            print("Invalid number")
+        if not isinstance(width, float):
+            raise TypeError("Invalid type of number")
+        if width <= 0.0 or width > 20.0:
+            raise ValueError("Invalid value of number")
+        self.__width = width
+
 
 if __name__ == '__main__':
 
      a = Rectangle()
      print(a.calc_perimeter(), a.calc_area())
-     a.length = -1
      a.length = 1.0
      print(a.length)
