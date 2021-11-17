@@ -1,44 +1,53 @@
-from Pizza import Pizza
+import json
+import os
+from Dish import Dish
 
 
 class Menu:
 
-    def __init__(self, types_of_pizza: set, schedule: tuple):
-        self.types_of_pizza = types_of_pizza
-        self.__schedule = dict(zip((0, 1, 2, 3, 4, 5, 6), schedule))
+    file_path = "menu.json"
 
-    @property
-    def types_of_pizza(self):
-        return self.__types_of_pizza
+    @staticmethod
+    def add(dish):
+        if not isinstance(dish, Dish):
+            raise TypeError
+        if os.path.isfile(Menu.file_path):
+            if Menu.__check_unique(dish):
+                data = Menu.__get_menu()
+                data.append(dish.__dict__)
+                with open(Menu.file_path, "w") as file:
+                    json.dump(data, file)
+        else:
+            with open(Menu.file_path, "w") as file:
+                data = [dish.__dict__]
+                json.dump(data, file)
 
-    @types_of_pizza.setter
-    def types_of_pizza(self, types_of_pizza: set):
-        if not isinstance(types_of_pizza, set) or not all(isinstance(pizza, Pizza) for pizza in types_of_pizza):
-            raise TypeError("Invalid list of pizzas")
-        self.__types_of_pizza = types_of_pizza
+    @staticmethod
+    def __check_unique(dish):
+        for item in Menu.__get_menu():
+            if item['_Dish__name'] == dish.name:
+                return False
+        return True
 
-    @property
-    def schedule(self):
-        return self.__schedule
+    @staticmethod
+    def __get_menu():
+        with open(Menu.file_path, "r") as menu:
+            data = json.load(menu)
+        return data
 
-    @schedule.setter
-    def schedule(self, schedule: tuple):
-        if not isinstance(schedule, tuple) or not all(isinstance(pizza, Pizza) for pizza in schedule):
-            raise TypeError("Invalid list of pizzas")
-        if len(schedule) != 7:
-            raise ValueError("Invalid list of pizzas")
-        self.__schedule = dict(zip((0, 1, 2, 3, 4, 5, 6), schedule))
+    @staticmethod
+    def get_dish(title):
+        if not isinstance(title, str):
+            raise TypeError
+        for item in Menu.__get_menu():
+            if item['_Dish__name'] == title:
+                return item
+        return None
 
-    def add_item_to_menu(self, pizza):
-        if not isinstance(pizza, Pizza):
-            raise TypeError("Invalid pizza")
-        self.types_of_pizza.add(pizza)
+    @staticmethod
+    def show():
+        print("Menu: ")
+        for line in Menu.__get_menu():
+            print(line)
+        print("\n")
 
-    def change_schedule(self, dayweek: int, new_pizza: Pizza):
-        if not isinstance(new_pizza, Pizza):
-            raise TypeError("Invalid pizza")
-        if not isinstance(dayweek, int):
-            raise TypeError("Invalid day of week")
-        if dayweek < 0 or dayweek >= 7:
-            raise ValueError("Invalid day of week")
-        self.schedule[dayweek] = new_pizza
