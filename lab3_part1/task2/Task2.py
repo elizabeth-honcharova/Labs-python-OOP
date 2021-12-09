@@ -11,6 +11,7 @@ from Pizza import Pizza
 from Schedule import Schedule
 from Order import Order
 
+
 def fill():
     pizza1 = Pizza("Margeritha", 120, "Mozzarella", "Tomatoes", "Sauce")
     pizza2 = Pizza("Pepperoni", 130, "Mozzarella", "Pepperoni", "Sauce")
@@ -38,7 +39,7 @@ def main():
     order.order_dish_of_the_day(1)
     print("+1 pizza of the day\n", order, end='\n\n')
     order.order_dish("Margeritha", 2)
-    print("+2 Margeritha\n", Sorder, end='\n\n')
+    print("+2 Margeritha\n", order, end='\n\n')
     order.del_from_order("Margeritha", 4)
     print("-4 Margeritha\n", order, end='\n\n')
     order.add_extra_ingredient("Tomato", 2)
