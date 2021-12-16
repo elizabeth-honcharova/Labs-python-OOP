@@ -9,10 +9,12 @@ class Teacher(ITeacher):
 
     @property
     def name(self):
+        """name getter"""
         return self.__name
 
     @name.setter
     def name(self, name):
+        """name setter"""
         if not isinstance(name, str):
             raise TypeError
         if not name:
@@ -21,5 +23,6 @@ class Teacher(ITeacher):
 
     @property
     def courses(self):
+        """courses getter"""
         return self.__courses
 

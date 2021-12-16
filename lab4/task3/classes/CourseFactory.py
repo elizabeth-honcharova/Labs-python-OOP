@@ -14,6 +14,7 @@ class CourseFactory(ICourseFactory):
 
     @staticmethod
     def __connect():
+        """method that creates connection to bd"""
         connector = pymysql.connect(
             host=host,
             port=3306,
@@ -25,20 +26,17 @@ class CourseFactory(ICourseFactory):
         return connector
 
     def form_course(self, course_name: str, teacher_name: str, program_list: list, course_type: str):
-
+        """method that forms course"""
         teacher = Teacher(teacher_name)
-
         if course_type.lower() == "local":
             course = LocalCourse(course_name, teacher, program_list)
         elif course_type == "offsite":
             course = OffsiteCourse(course_name, teacher, program_list)
         else:
             raise ValueError
-
         self.create_teacher(teacher_name)
         teacher = self.__is_in_database('teacher', teacher_name)
         teacher_id = teacher['id']
-
         is_course = self.__is_in_database('course', course_name)
         if not is_course:
             with self.connection.cursor() as cursor:
@@ -47,10 +45,10 @@ class CourseFactory(ICourseFactory):
                 values = [course_name, teacher_id, '. '.join(program_list), course_type]
                 cursor.execute(command, values)
                 self.connection.commit()
-
         return course
 
     def __is_in_database(self, db, name):
+        """method that checks id name is in database"""
         if db == 'course':
             courses_list = self.__select_all_from_courses()
             result = next((item for item in courses_list if item["name"] == name), None)
@@ -62,8 +60,9 @@ class CourseFactory(ICourseFactory):
         return result
 
     def create_teacher(self, teacher_name: str):
+        """method that creates teacher in database if he is not in the database"""
         teacher = Teacher(teacher_name)
-        is_teacher = teacher = self.__is_in_database('teacher', teacher_name)
+        is_teacher = self.__is_in_database('teacher', teacher_name)
         if not is_teacher:
             with self.connection.cursor() as cursor:
                 command = 'INSERT INTO teacher (name) VALUE (%s)'
@@ -72,6 +71,7 @@ class CourseFactory(ICourseFactory):
         return teacher
 
     def __select_all_from_courses(self):
+        """method that select all rows from table `course`"""
         with self.connection.cursor() as cursor:
             command = 'SELECT course.name, teacher.name, program, type ' \
                               'FROM course ' \
@@ -81,6 +81,7 @@ class CourseFactory(ICourseFactory):
         return fetchall
 
     def __select_all_from_teachers(self):
+        """method that select all rows from table `teacher`"""
         with self.connection.cursor() as cursor:
             cursor.execute('SELECT * FROM teacher')
             fetchall = cursor.fetchall()
