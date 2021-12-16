@@ -1,11 +1,10 @@
 import pymysql
 
-from lab4.task3.classes.Course import Course
 from lab4.task3.classes.OffsiteCourse import OffsiteCourse
 from lab4.task3.classes.Teacher import Teacher
 from lab4.task3.interfaces.ICourseFactory import ICourseFactory
 from lab4.task3.config import host, user, password, database
-from lab4.task3.interfaces.LocalCourse import LocalCourse
+from lab4.task3.classes.LocalCourse import LocalCourse
 
 
 class CourseFactory(ICourseFactory):
@@ -37,34 +36,39 @@ class CourseFactory(ICourseFactory):
             raise ValueError
 
         self.create_teacher(teacher_name)
-
-        teachers_list = self.__select_all_from_teachers()
-        teacher = next((item for item in teachers_list if item["name"] == teacher_name), None)
-
+        teacher = self.__is_in_database('teacher', teacher_name)
         teacher_id = teacher['id']
 
-        with self.connection.cursor() as cursor:
-
-            command = "INSERT INTO course (name, teacher_id, program, type)" \
-                          "VALUES (%s, %s, %s, %s)"
-            values = [course_name, teacher_id, '. '.join(program_list), course_type]
-            cursor.execute(command, values)
-            self.connection.commit()
+        is_course = self.__is_in_database('course', course_name)
+        if not is_course:
+            with self.connection.cursor() as cursor:
+                command = "INSERT INTO course (name, teacher_id, program, type)" \
+                              "VALUES (%s, %s, %s, %s)"
+                values = [course_name, teacher_id, '. '.join(program_list), course_type]
+                cursor.execute(command, values)
+                self.connection.commit()
 
         return course
 
+    def __is_in_database(self, db, name):
+        if db == 'course':
+            courses_list = self.__select_all_from_courses()
+            result = next((item for item in courses_list if item["name"] == name), None)
+        elif db == 'teacher':
+            teachers_list = self.__select_all_from_teachers()
+            result = next((item for item in teachers_list if item["name"] == name), None)
+        else:
+            raise ValueError
+        return result
+
     def create_teacher(self, teacher_name: str):
         teacher = Teacher(teacher_name)
-
-        teachers_list = self.__select_all_from_teachers()
-        is_teacher = next((item for item in teachers_list if item["name"] == teacher_name), None)
-
+        is_teacher = teacher = self.__is_in_database('teacher', teacher_name)
         if not is_teacher:
             with self.connection.cursor() as cursor:
                 command = 'INSERT INTO teacher (name) VALUE (%s)'
                 cursor.execute(command, teacher_name)
                 self.connection.commit()
-
         return teacher
 
     def __select_all_from_courses(self):
