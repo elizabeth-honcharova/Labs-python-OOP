@@ -11,20 +11,28 @@ def teacher_adder(setter):
 
 
 class Course(ICourse):
+    """the base class of all course instances"""
 
     def __init__(self, name: str, teacher: Teacher, program: list):
+        """initialize course instance
+
+        Keyword arguments:
+        name -- the title of course
+        teacher -- the instance of Teacher class
+        program -- list of course topics
+        """
         self.name = name
         self.teacher = teacher
         self.program = program
 
     @property
     def name(self):
-        """name getter"""
+        """the title of course getter"""
         return self.__name
 
     @name.setter
     def name(self, name):
-        """name setter"""
+        """the title of course setter"""
         if not isinstance(name, str):
             raise TypeError
         if not name:
@@ -33,25 +41,25 @@ class Course(ICourse):
 
     @property
     def teacher(self):
-        """teacher getter"""
+        """teacher name getter"""
         return self.__teacher
 
     @teacher.setter
     @teacher_adder
     def teacher(self, teacher):
-        """teacher setter"""
+        """teacher name setter"""
         if not isinstance(teacher, Teacher):
             raise TypeError
         self.__teacher = teacher
 
     @property
     def program(self):
-        """program getter"""
+        """program of course getter"""
         return self.__program
 
     @program.setter
     def program(self, program):
-        """program setter"""
+        """program of course setter"""
         if not all(isinstance(topic, str) for topic in program):
             raise TypeError
         if not program:

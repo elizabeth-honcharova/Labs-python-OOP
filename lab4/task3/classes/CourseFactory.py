@@ -8,13 +8,15 @@ from lab4.task3.classes.LocalCourse import LocalCourse
 
 
 class CourseFactory(ICourseFactory):
+    """the class that forms a course and adds it to tha database"""
 
     def __init__(self):
+        """initialize connection to the database"""
         self.connection = CourseFactory.__connect()
 
     @staticmethod
     def __connect():
-        """method that creates connection to bd"""
+        """method that creates connection to the database"""
         connector = pymysql.connect(
             host=host,
             port=3306,
@@ -26,7 +28,15 @@ class CourseFactory(ICourseFactory):
         return connector
 
     def form_course(self, course_name: str, teacher_name: str, program_list: list, course_type: str):
-        """method that forms course"""
+        """method that forms course
+
+        Keyword arguments:
+        course_name -- the title of course
+        teacher_name -- the name of the course teacher
+        program_list -- list of course topics
+        course_type -- type of course (local or offsite)
+        """
+
         teacher = Teacher(teacher_name)
         if course_type.lower() == "local":
             course = LocalCourse(course_name, teacher, program_list)
@@ -48,7 +58,12 @@ class CourseFactory(ICourseFactory):
         return course
 
     def __is_in_database(self, db, name):
-        """method that checks id name is in database"""
+        """method that checks if id name is in database
+
+        Keyword arguments:
+        db -- the database name of field
+        name -- the name of the course teacher"""
+
         if db == 'course':
             courses_list = self.__select_all_from_courses()
             result = next((item for item in courses_list if item["name"] == name), None)
@@ -92,6 +107,7 @@ class CourseFactory(ICourseFactory):
 
 
 class CoursesIterator:
+    """class-iterator for the course factory"""
     def __iter__(self):
         return self
 

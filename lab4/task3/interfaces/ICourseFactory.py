@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 
 class ICourseFactory(ABC):
+    """the interface for the class that forms a course and adds it to tha database"""
 
     @abstractmethod
     def form_course(self, course_name: str, teacher_name: str, program_list: list, course_type: str):
